@@ -1,0 +1,34 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: securegraph-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/securegraph_db}
+    username: ${SPRING_DATASOURCE_USERNAME:securegraph_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:securegraph_pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+securegraph:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  osv:
+    base-url: ${OSV_API_BASE_URL:https://api.osv.dev/v1}
+    timeout-seconds: 10
+
