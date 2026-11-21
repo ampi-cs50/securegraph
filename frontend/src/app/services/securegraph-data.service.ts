@@ -164,6 +164,11 @@ export class SecureGraphDataService {
 
   subirSbom(proyectoId: number, file: File): Observable<{ projectId: number; analysisId: number; status: string }> {
     if (this.useMockMode()) {
+      const target = this.mockProjects.find((p) => p.id === proyectoId);
+      if (target) {
+        target.totalAnalisis += 1;
+        target.ultimoAnalisisId = 42;
+      }
       return of({
         projectId: proyectoId,
         analysisId: 42,
