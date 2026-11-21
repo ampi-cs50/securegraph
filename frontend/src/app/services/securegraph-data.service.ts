@@ -18,7 +18,9 @@ import {
 export class SecureGraphDataService {
   private readonly baseUrl = 'http://localhost:8080/api';
 
-  readonly useMockMode = signal<boolean>(true);
+  private static readonly MODE_STORAGE_KEY = 'securegraph.dataMode';
+
+  readonly useMockMode = signal<boolean>(SecureGraphDataService.readStoredMode());
 
   private mockProjects: Proyecto[] = [
     {
@@ -123,8 +125,22 @@ export class SecureGraphDataService {
 
   constructor(private readonly http: HttpClient) {}
 
+  private static readStoredMode(): boolean {
+    try {
+      return localStorage.getItem(SecureGraphDataService.MODE_STORAGE_KEY) !== 'api';
+    } catch {
+      return true;
+    }
+  }
+
   toggleMode(): void {
-    this.useMockMode.update((v) => !v);
+    const nextMock = !this.useMockMode();
+    this.useMockMode.set(nextMock);
+    try {
+      localStorage.setItem(SecureGraphDataService.MODE_STORAGE_KEY, nextMock ? 'mock' : 'api');
+    } catch {
+      // Storage unavailable: the mode simply will not persist across reloads.
+    }
   }
 
   checkHealth(): Observable<HealthResponse> {

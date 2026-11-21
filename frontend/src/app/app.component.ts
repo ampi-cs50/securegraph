@@ -53,7 +53,9 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
         </aside>
 
         <main class="workspace">
-          <router-outlet></router-outlet>
+          @for (mode of [dataService.useMockMode()]; track mode) {
+            <router-outlet></router-outlet>
+          }
         </main>
       </div>
     </div>
@@ -65,9 +67,9 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
       flex-direction: column;
     }
     .topbar {
-      height: 68px;
+      height: 4.25rem;
       background: #0b1120;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 0.0625rem solid var(--border-color);
       padding: 0 1.5rem;
       display: flex;
       align-items: center;
@@ -79,11 +81,11 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
       gap: 0.75rem;
     }
     .brand-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.5rem;
       background: rgba(56, 189, 248, 0.15);
-      border: 1px solid var(--accent);
+      border: 0.0625rem solid var(--accent);
       color: var(--accent);
       display: flex;
       align-items: center;
@@ -110,10 +112,10 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
     .mode-indicator {
       font-size: 0.75rem;
       padding: 0.3rem 0.7rem;
-      border-radius: 999px;
+      border-radius: 62rem;
       background: rgba(234, 179, 8, 0.15);
       color: #fde047;
-      border: 1px solid #eab308;
+      border: 0.0625rem solid #eab308;
       font-weight: 600;
     }
     .mode-indicator.live {
@@ -126,9 +128,9 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
       display: flex;
     }
     .sidebar {
-      width: 250px;
+      width: 15.625rem;
       background: #111827;
-      border-right: 1px solid var(--border-color);
+      border-right: 0.0625rem solid var(--border-color);
       padding: 1.25rem 0.85rem;
       display: flex;
       flex-direction: column;
@@ -143,7 +145,7 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
       text-decoration: none;
       color: var(--text-secondary);
       padding: 0.7rem 0.9rem;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.15s ease;
@@ -161,7 +163,7 @@ import { SecureGraphDataService } from './services/securegraph-data.service';
       font-size: 0.75rem;
       color: var(--text-secondary);
       padding: 0.75rem;
-      border-top: 1px solid var(--border-color);
+      border-top: 0.0625rem solid var(--border-color);
       line-height: 1.4;
     }
     .workspace {
