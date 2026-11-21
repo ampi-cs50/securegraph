@@ -1,0 +1,326 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 920" width="1400" height="920" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow-fk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-comp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#0d9488"/>
+    </marker>
+  </defs>
+
+  <!-- Fondo general -->
+  <rect width="1400" height="920" fill="#f8fafc"/>
+  <rect x="16" y="16" width="1368" height="888" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Encabezado -->
+  <rect x="16" y="16" width="1368" height="76" rx="12" fill="#0f172a"/>
+  <rect x="16" y="76" width="1368" height="16" fill="#0f172a"/>
+  <text x="44" y="50" fill="#f8fafc" font-size="22" font-weight="800">Diagrama Entidad-Relación (DER) — Esquema Relacional SecureGraph</text>
+  <text x="44" y="74" fill="#94a3b8" font-size="13" font-weight="500">Motor: PostgreSQL 16 · Migración: Flyway V1__init_schema.sql · Trabajo Final Integrador (UTN-FRLP — Grupo N.° 9)</text>
+
+  <!-- Leyenda superior derecha -->
+  <rect x="1030" y="32" width="328" height="44" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <rect x="1046" y="45" width="28" height="18" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1"/>
+  <text x="1060" y="58" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+  <text x="1082" y="58" fill="#e2e8f0" font-size="11">Clave Primaria</text>
+
+  <rect x="1172" y="45" width="28" height="18" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="1186" y="58" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+  <text x="1208" y="58" fill="#e2e8f0" font-size="11">Clave Foránea (1 : N)</text>
+
+  <!-- ==================== LÍNEAS DE RELACIÓN (1 A N) ==================== -->
+  <!-- 1. PROYECTO (1) -> ANALISIS (N) -->
+  <path d="M 380 235 L 510 235" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-fk)"/>
+  <rect x="405" y="206" width="82" height="22" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="446" y="221" fill="#1e40af" font-size="11" font-weight="700" text-anchor="middle">1 : N (tiene)</text>
+  <text x="392" y="252" fill="#1e40af" font-size="12" font-weight="800">1</text>
+  <text x="478" y="252" fill="#1e40af" font-size="12" font-weight="800">0..N</text>
+
+  <!-- 2. ANALISIS (1) -> COMPONENTE (N) -->
+  <path d="M 590 365 L 590 430 L 230 430 L 230 485" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-fk)"/>
+  <rect x="330" y="418" width="145" height="22" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="402" y="433" fill="#1e40af" font-size="11" font-weight="700" text-anchor="middle">1 : N (contiene nodos)</text>
+  <text x="575" y="384" fill="#1e40af" font-size="12" font-weight="800">1</text>
+  <text x="242" y="476" fill="#1e40af" font-size="12" font-weight="800">0..N</text>
+
+  <!-- 3. ANALISIS (1) -> RELACION_DEPENDENCIA (N) -->
+  <path d="M 695 365 L 695 535" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-fk)"/>
+  <rect x="622" y="440" width="146" height="22" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="695" y="455" fill="#1e40af" font-size="11" font-weight="700" text-anchor="middle">1 : N (contiene aristas)</text>
+  <text x="705" y="384" fill="#1e40af" font-size="12" font-weight="800">1</text>
+  <text x="705" y="525" fill="#1e40af" font-size="12" font-weight="800">0..N</text>
+
+  <!-- 4. ANALISIS (1) -> HALLAZGO_VULNERABILIDAD (N) -->
+  <path d="M 880 250 L 1140 250 L 1140 485" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-fk)"/>
+  <rect x="935" y="238" width="150" height="22" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="1010" y="253" fill="#1e40af" font-size="11" font-weight="700" text-anchor="middle">1 : N (registra hallazgos)</text>
+  <text x="892" y="242" fill="#1e40af" font-size="12" font-weight="800">1</text>
+  <text x="1150" y="476" fill="#1e40af" font-size="12" font-weight="800">0..N</text>
+
+  <!-- 5. COMPONENTE (1) -> RELACION_DEPENDENCIA (N: padre_componente_id) -->
+  <path d="M 420 620 L 525 620" fill="none" stroke="#0d9488" stroke-width="2.2" stroke-dasharray="5,3" marker-end="url(#arrow-comp)"/>
+  <rect x="432" y="594" width="82" height="20" rx="4" fill="#f0fdfa" stroke="#5eead4" stroke-width="1"/>
+  <text x="473" y="608" fill="#0f766e" font-size="10" font-weight="700" text-anchor="middle">1:N (es padre)</text>
+
+  <!-- 6. COMPONENTE (1) -> RELACION_DEPENDENCIA (N: hijo_componente_id) -->
+  <path d="M 420 665 L 525 665" fill="none" stroke="#0d9488" stroke-width="2.2" stroke-dasharray="5,3" marker-end="url(#arrow-comp)"/>
+  <rect x="432" y="672" width="82" height="20" rx="4" fill="#f0fdfa" stroke="#5eead4" stroke-width="1"/>
+  <text x="473" y="686" fill="#0f766e" font-size="10" font-weight="700" text-anchor="middle">1:N (es hijo)</text>
+
+  <!-- 7. COMPONENTE (1) -> HALLAZGO_VULNERABILIDAD (N: componente_id) -->
+  <path d="M 230 815 L 230 858 L 1140 858 L 1140 815" fill="none" stroke="#0d9488" stroke-width="2.2" stroke-dasharray="6,3" marker-end="url(#arrow-comp)"/>
+  <rect x="595" y="846" width="190" height="22" rx="4" fill="#f0fdfa" stroke="#5eead4" stroke-width="1"/>
+  <text x="690" y="861" fill="#0f766e" font-size="11" font-weight="700" text-anchor="middle">1 : N (componente afectado por)</text>
+  <text x="240" y="835" fill="#0f766e" font-size="12" font-weight="800">1</text>
+  <text x="1150" y="835" fill="#0f766e" font-size="12" font-weight="800">0..N</text>
+
+
+  <!-- ==================== TABLA 1: PROYECTO ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="140" width="330" height="185" rx="8" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+    <rect x="50" y="140" width="330" height="38" rx="8" fill="#1e3a8a"/>
+    <rect x="50" y="168" width="330" height="10" fill="#1e3a8a"/>
+    <text x="215" y="164" fill="#ffffff" font-size="15" font-weight="800" text-anchor="middle">PROYECTO</text>
+
+    <!-- Fila 1: id -->
+    <rect x="62" y="188" width="26" height="18" rx="4" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="75" y="201" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+    <text x="98" y="201" fill="#0f172a" font-size="12.5" font-weight="700">id</text>
+    <text x="368" y="201" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">BIGSERIAL</text>
+    <line x1="50" y1="214" x2="380" y2="214" stroke="#e2e8f0"/>
+
+    <!-- Fila 2: nombre -->
+    <text x="98" y="234" fill="#0f172a" font-size="12.5" font-weight="600">nombre</text>
+    <text x="368" y="234" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">VARCHAR(100) NOT NULL</text>
+    <line x1="50" y1="246" x2="380" y2="246" stroke="#e2e8f0"/>
+
+    <!-- Fila 3: descripcion -->
+    <text x="98" y="266" fill="#0f172a" font-size="12.5">descripcion</text>
+    <text x="368" y="266" fill="#64748b" font-size="11.5" font-family="monospace" text-anchor="end">TEXT NULL</text>
+    <line x1="50" y1="278" x2="380" y2="278" stroke="#e2e8f0"/>
+
+    <!-- Fila 4: created_at -->
+    <text x="98" y="298" fill="#0f172a" font-size="12.5" font-weight="600">created_at</text>
+    <text x="368" y="298" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">TIMESTAMP NOT NULL</text>
+  </g>
+
+
+  <!-- ==================== TABLA 2: ANALISIS ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="510" y="115" width="370" height="250" rx="8" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+    <rect x="510" y="115" width="370" height="38" rx="8" fill="#1e3a8a"/>
+    <rect x="510" y="143" width="370" height="10" fill="#1e3a8a"/>
+    <text x="695" y="139" fill="#ffffff" font-size="15" font-weight="800" text-anchor="middle">ANALISIS</text>
+
+    <!-- id -->
+    <rect x="522" y="162" width="26" height="18" rx="4" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="535" y="175" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+    <text x="558" y="175" fill="#0f172a" font-size="12.5" font-weight="700">id</text>
+    <text x="868" y="175" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">BIGSERIAL</text>
+    <line x1="510" y1="186" x2="880" y2="186" stroke="#e2e8f0"/>
+
+    <!-- proyecto_id -->
+    <rect x="522" y="193" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="535" y="206" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="558" y="206" fill="#0f172a" font-size="12.5" font-weight="700">proyecto_id</text>
+    <text x="868" y="206" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL (CASCADE)</text>
+    <line x1="510" y1="217" x2="880" y2="217" stroke="#e2e8f0"/>
+
+    <!-- fecha_analisis -->
+    <text x="558" y="236" fill="#0f172a" font-size="12.5" font-weight="600">fecha_analisis</text>
+    <text x="868" y="236" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">TIMESTAMP NOT NULL</text>
+    <line x1="510" y1="247" x2="880" y2="247" stroke="#e2e8f0"/>
+
+    <!-- sbom_formato -->
+    <text x="558" y="266" fill="#0f172a" font-size="12.5">sbom_formato</text>
+    <text x="868" y="266" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">VARCHAR(50) NOT NULL</text>
+    <line x1="510" y1="277" x2="880" y2="277" stroke="#e2e8f0"/>
+
+    <!-- estado -->
+    <text x="558" y="296" fill="#0f172a" font-size="12.5">estado</text>
+    <text x="868" y="296" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">VARCHAR(30) NOT NULL</text>
+    <line x1="510" y1="307" x2="880" y2="307" stroke="#e2e8f0"/>
+
+    <!-- total_componentes -->
+    <text x="558" y="326" fill="#0f172a" font-size="12.5">total_componentes</text>
+    <text x="868" y="326" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">INT NOT NULL DEFAULT 0</text>
+    <line x1="510" y1="337" x2="880" y2="337" stroke="#e2e8f0"/>
+
+    <!-- total_vulnerabilidades -->
+    <text x="558" y="355" fill="#0f172a" font-size="12.5">total_vulnerabilidades</text>
+    <text x="868" y="355" fill="#475569" font-size="11.5" font-family="monospace" text-anchor="end">INT NOT NULL DEFAULT 0</text>
+  </g>
+
+
+  <!-- ==================== TABLA 3: COMPONENTE ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="485" width="370" height="330" rx="8" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+    <rect x="50" y="485" width="370" height="38" rx="8" fill="#0f766e"/>
+    <rect x="50" y="513" width="370" height="10" fill="#0f766e"/>
+    <text x="235" y="509" fill="#ffffff" font-size="15" font-weight="800" text-anchor="middle">COMPONENTE (Nodos del DAG)</text>
+
+    <!-- id -->
+    <rect x="62" y="531" width="26" height="18" rx="4" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="75" y="544" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+    <text x="98" y="544" fill="#0f172a" font-size="12" font-weight="700">id</text>
+    <text x="408" y="544" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">BIGSERIAL</text>
+    <line x1="50" y1="554" x2="420" y2="554" stroke="#e2e8f0"/>
+
+    <!-- analisis_id -->
+    <rect x="62" y="560" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="75" y="573" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="98" y="573" fill="#0f172a" font-size="12" font-weight="700">analisis_id</text>
+    <text x="408" y="573" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="50" y1="583" x2="420" y2="583" stroke="#e2e8f0"/>
+
+    <!-- bom_ref -->
+    <text x="98" y="601" fill="#0f172a" font-size="12" font-weight="600">bom_ref</text>
+    <text x="408" y="601" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(255) NOT NULL</text>
+    <line x1="50" y1="611" x2="420" y2="611" stroke="#e2e8f0"/>
+
+    <!-- group_id -->
+    <text x="98" y="629" fill="#0f172a" font-size="12">group_id</text>
+    <text x="408" y="629" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(150)</text>
+    <line x1="50" y1="639" x2="420" y2="639" stroke="#e2e8f0"/>
+
+    <!-- artifact_id -->
+    <text x="98" y="657" fill="#0f172a" font-size="12" font-weight="600">artifact_id</text>
+    <text x="408" y="657" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(150) NOT NULL</text>
+    <line x1="50" y1="667" x2="420" y2="667" stroke="#e2e8f0"/>
+
+    <!-- version -->
+    <text x="98" y="685" fill="#0f172a" font-size="12">version</text>
+    <text x="408" y="685" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(50)</text>
+    <line x1="50" y1="695" x2="420" y2="695" stroke="#e2e8f0"/>
+
+    <!-- purl -->
+    <text x="98" y="713" fill="#0f172a" font-size="12">purl</text>
+    <text x="408" y="713" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(255)</text>
+    <line x1="50" y1="723" x2="420" y2="723" stroke="#e2e8f0"/>
+
+    <!-- scope -->
+    <text x="98" y="741" fill="#0f172a" font-size="12">scope</text>
+    <text x="408" y="741" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(30) DEFAULT 'required'</text>
+    <line x1="50" y1="751" x2="420" y2="751" stroke="#e2e8f0"/>
+
+    <!-- es_directa -->
+    <text x="98" y="769" fill="#0f172a" font-size="12" font-weight="600">es_directa</text>
+    <text x="408" y="769" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">BOOLEAN NOT NULL</text>
+    <line x1="50" y1="779" x2="420" y2="779" stroke="#e2e8f0"/>
+
+    <!-- modulo_contexto -->
+    <text x="98" y="798" fill="#0f172a" font-size="12">modulo_contexto</text>
+    <text x="408" y="798" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(100)</text>
+  </g>
+
+
+  <!-- ==================== TABLA 4: RELACION_DEPENDENCIA ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="525" y="535" width="350" height="205" rx="8" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+    <rect x="525" y="535" width="350" height="38" rx="8" fill="#0f766e"/>
+    <rect x="525" y="563" width="350" height="10" fill="#0f766e"/>
+    <text x="700" y="559" fill="#ffffff" font-size="14.5" font-weight="800" text-anchor="middle">RELACION_DEPENDENCIA (Aristas)</text>
+
+    <!-- id -->
+    <rect x="537" y="582" width="26" height="18" rx="4" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="550" y="595" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+    <text x="572" y="595" fill="#0f172a" font-size="12" font-weight="700">id</text>
+    <text x="863" y="595" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">BIGSERIAL</text>
+    <line x1="525" y1="606" x2="875" y2="606" stroke="#e2e8f0"/>
+
+    <!-- analisis_id -->
+    <rect x="537" y="613" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="550" y="626" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="572" y="626" fill="#0f172a" font-size="12" font-weight="700">analisis_id</text>
+    <text x="863" y="626" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="525" y1="637" x2="875" y2="637" stroke="#e2e8f0"/>
+
+    <!-- padre_componente_id -->
+    <rect x="537" y="644" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="550" y="657" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="572" y="657" fill="#0f172a" font-size="12" font-weight="700">padre_componente_id</text>
+    <text x="863" y="657" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="525" y1="668" x2="875" y2="668" stroke="#e2e8f0"/>
+
+    <!-- hijo_componente_id -->
+    <rect x="537" y="675" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="550" y="688" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="572" y="688" fill="#0f172a" font-size="12" font-weight="700">hijo_componente_id</text>
+    <text x="863" y="688" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="525" y1="699" x2="875" y2="699" stroke="#e2e8f0"/>
+
+    <!-- tipo_transitiva -->
+    <text x="572" y="722" fill="#0f172a" font-size="12" font-weight="600">tipo_transitiva</text>
+    <text x="863" y="722" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">BOOLEAN NOT NULL</text>
+  </g>
+
+
+  <!-- ==================== TABLA 5: HALLAZGO_VULNERABILIDAD ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="960" y="485" width="390" height="330" rx="8" fill="#ffffff" stroke="#991b1b" stroke-width="2"/>
+    <rect x="960" y="485" width="390" height="38" rx="8" fill="#991b1b"/>
+    <rect x="960" y="513" width="390" height="10" fill="#991b1b"/>
+    <text x="1155" y="509" fill="#ffffff" font-size="14.5" font-weight="800" text-anchor="middle">HALLAZGO_VULNERABILIDAD</text>
+
+    <!-- id -->
+    <rect x="972" y="531" width="26" height="18" rx="4" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="985" y="544" fill="#1d4ed8" font-size="10" font-weight="800" text-anchor="middle">PK</text>
+    <text x="1008" y="544" fill="#0f172a" font-size="12" font-weight="700">id</text>
+    <text x="1338" y="544" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">BIGSERIAL</text>
+    <line x1="960" y1="554" x2="1350" y2="554" stroke="#e2e8f0"/>
+
+    <!-- analisis_id -->
+    <rect x="972" y="560" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="985" y="573" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="1008" y="573" fill="#0f172a" font-size="12" font-weight="700">analisis_id</text>
+    <text x="1338" y="573" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="960" y1="583" x2="1350" y2="583" stroke="#e2e8f0"/>
+
+    <!-- componente_id -->
+    <rect x="972" y="589" width="26" height="18" rx="4" fill="#fef3c7" stroke="#d97706"/>
+    <text x="985" y="602" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">FK</text>
+    <text x="1008" y="602" fill="#0f172a" font-size="12" font-weight="700">componente_id</text>
+    <text x="1338" y="602" fill="#b45309" font-size="11" font-family="monospace" text-anchor="end">BIGINT NOT NULL</text>
+    <line x1="960" y1="612" x2="1350" y2="612" stroke="#e2e8f0"/>
+
+    <!-- osv_id -->
+    <text x="1008" y="630" fill="#0f172a" font-size="12" font-weight="600">osv_id</text>
+    <text x="1338" y="630" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(100) NOT NULL</text>
+    <line x1="960" y1="640" x2="1350" y2="640" stroke="#e2e8f0"/>
+
+    <!-- cve_id -->
+    <text x="1008" y="658" fill="#0f172a" font-size="12">cve_id</text>
+    <text x="1338" y="658" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(50)</text>
+    <line x1="960" y1="668" x2="1350" y2="668" stroke="#e2e8f0"/>
+
+    <!-- severidad_cvss -->
+    <text x="1008" y="686" fill="#0f172a" font-size="12" font-weight="600">severidad_cvss</text>
+    <text x="1338" y="686" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">NUMERIC(3,1) NOT NULL</text>
+    <line x1="960" y1="696" x2="1350" y2="696" stroke="#e2e8f0"/>
+
+    <!-- nivel_severidad -->
+    <text x="1008" y="714" fill="#0f172a" font-size="12" font-weight="600">nivel_severidad</text>
+    <text x="1338" y="714" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">VARCHAR(20) NOT NULL</text>
+    <line x1="960" y1="724" x2="1350" y2="724" stroke="#e2e8f0"/>
+
+    <!-- profundidad -->
+    <text x="1008" y="742" fill="#0f172a" font-size="12" font-weight="600">profundidad</text>
+    <text x="1338" y="742" fill="#475569" font-size="11" font-family="monospace" text-anchor="end">INT NOT NULL DEFAULT 1</text>
+    <line x1="960" y1="752" x2="1350" y2="752" stroke="#e2e8f0"/>
+
+    <!-- score_prioridad -->
+    <text x="1008" y="770" fill="#991b1b" font-size="12" font-weight="700">score_prioridad</text>
+    <text x="1338" y="770" fill="#991b1b" font-size="11" font-family="monospace" font-weight="700" text-anchor="end">NUMERIC(4,1) NOT NULL</text>
+    <line x1="960" y1="780" x2="1350" y2="780" stroke="#e2e8f0"/>
+
+    <!-- razones_prioridad -->
+    <text x="1008" y="799" fill="#0f172a" font-size="12">razones_prioridad</text>
+    <text x="1338" y="799" fill="#64748b" font-size="11" font-family="monospace" text-anchor="end">TEXT</text>
+  </g>
+
+  <!-- Pie de página -->
+  <text x="44" y="890" fill="#64748b" font-size="11.5">Índices definidos en V1__init_schema.sql: idx_analisis_proyecto · idx_componente_analisis · idx_relacion_analisis · idx_relacion_padre · idx_relacion_hijo · idx_hallazgo_analisis_score</text>
+</svg>

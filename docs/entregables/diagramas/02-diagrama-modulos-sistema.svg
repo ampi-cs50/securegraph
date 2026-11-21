@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 940" width="1400" height="940" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- Fondo general -->
+  <rect width="1400" height="940" fill="#f8fafc"/>
+  <rect x="16" y="16" width="1368" height="908" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Encabezado -->
+  <rect x="16" y="16" width="1368" height="76" rx="12" fill="#0f172a"/>
+  <rect x="16" y="76" width="1368" height="16" fill="#0f172a"/>
+  <text x="44" y="50" fill="#f8fafc" font-size="22" font-weight="800">Diagrama de Módulos y Arquitectura del Sistema — SecureGraph</text>
+  <text x="44" y="74" fill="#94a3b8" font-size="13" font-weight="500">Arquitectura Cliente-Servidor Desacoplada · Angular 17+ SPA · Spring Boot 3.3.5 (Java 21) · PostgreSQL 16 · API OSV</text>
+
+  <!-- ==================== CAPA 1: FRONTEND ==================== -->
+  <rect x="44" y="114" width="1312" height="275" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="64" y="102" width="470" height="24" rx="5" fill="#1d4ed8"/>
+  <text x="299" y="118" fill="#ffffff" font-size="12" font-weight="800" text-anchor="middle">CAPA DE PRESENTACIÓN — FRONTEND (Angular 17+ · Puerto 4200)</text>
+
+  <!-- AppComponent Shell -->
+  <g filter="url(#shadow)">
+    <rect x="450" y="134" width="500" height="46" rx="7" fill="#ffffff" stroke="#1e40af" stroke-width="2"/>
+    <text x="700" y="155" fill="#0f172a" font-size="13.5" font-weight="800" text-anchor="middle">AppComponent (Layout General, Enrutador &amp; Selector Mock/API)</text>
+    <text x="700" y="172" fill="#475569" font-size="11" text-anchor="middle">frontend/src/app/app.component.ts</text>
+  </g>
+
+  <!-- 4 Módulos de Vista -->
+  <!-- 1. ProjectsComponent -->
+  <g filter="url(#shadow)">
+    <rect x="68" y="205" width="295" height="82" rx="7" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+    <rect x="68" y="205" width="295" height="24" rx="7" fill="#2563eb"/>
+    <text x="215" y="221" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">1. Gestión de Proyectos (RF-01)</text>
+    <text x="215" y="244" fill="#0f172a" font-size="12.5" font-weight="700" text-anchor="middle">ProjectsComponent</text>
+    <text x="215" y="262" fill="#475569" font-size="11" text-anchor="middle">Alta de proyectos Maven e inventario</text>
+    <text x="215" y="277" fill="#64748b" font-size="10.5" text-anchor="middle">con contador de análisis realizados</text>
+  </g>
+
+  <!-- 2. UploadSbomComponent -->
+  <g filter="url(#shadow)">
+    <rect x="391" y="205" width="295" height="82" rx="7" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+    <rect x="391" y="205" width="295" height="24" rx="7" fill="#2563eb"/>
+    <text x="538" y="221" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">2. Importador SBOM (RF-02)</text>
+    <text x="538" y="244" fill="#0f172a" font-size="12.5" font-weight="700" text-anchor="middle">UploadSbomComponent</text>
+    <text x="538" y="262" fill="#475569" font-size="11" text-anchor="middle">Validación CycloneDX JSON en cliente,</text>
+    <text x="538" y="277" fill="#64748b" font-size="10.5" text-anchor="middle">previsualización y envío multipart</text>
+  </g>
+
+  <!-- 3. DashboardComponent -->
+  <g filter="url(#shadow)">
+    <rect x="714" y="205" width="295" height="82" rx="7" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+    <rect x="714" y="205" width="295" height="24" rx="7" fill="#2563eb"/>
+    <text x="861" y="221" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">3. Panel y Reportes (RF-06 / RF-08)</text>
+    <text x="861" y="244" fill="#0f172a" font-size="12.5" font-weight="700" text-anchor="middle">DashboardComponent</text>
+    <text x="861" y="262" fill="#475569" font-size="11" text-anchor="middle">Métricas, comparador Score vs. CVSS,</text>
+    <text x="861" y="277" fill="#64748b" font-size="10.5" text-anchor="middle">razones explicables y exportación JSON</text>
+  </g>
+
+  <!-- 4. GraphViewComponent -->
+  <g filter="url(#shadow)">
+    <rect x="1037" y="205" width="295" height="82" rx="7" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+    <rect x="1037" y="205" width="295" height="24" rx="7" fill="#2563eb"/>
+    <text x="1184" y="221" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">4. Visualizador DAG (RF-07)</text>
+    <text x="1184" y="244" fill="#0f172a" font-size="12.5" font-weight="700" text-anchor="middle">GraphViewComponent</text>
+    <text x="1184" y="262" fill="#475569" font-size="11" text-anchor="middle">Renderizado SVG del grafo dirigido</text>
+    <text x="1184" y="277" fill="#64748b" font-size="10.5" text-anchor="middle">e inspector lateral de topología</text>
+  </g>
+
+  <!-- SecureGraphDataService -->
+  <g filter="url(#shadow)">
+    <rect x="330" y="315" width="740" height="54" rx="7" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+    <text x="700" y="339" fill="#38bdf8" font-size="14" font-weight="800" text-anchor="middle">SecureGraphDataService (Cliente HTTP &amp; Soporte Dual Modo Mock / API Real)</text>
+    <text x="700" y="357" fill="#cbd5e1" font-size="11" text-anchor="middle">frontend/src/app/services/securegraph-data.service.ts · Modelos tipados en securegraph.models.ts</text>
+  </g>
+
+  <!-- Flechas internas Frontend -->
+  <line x1="215" y1="287" x2="450" y2="315" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <line x1="538" y1="287" x2="600" y2="315" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <line x1="861" y1="287" x2="800" y2="315" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <line x1="1184" y1="287" x2="950" y2="315" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+
+
+  <!-- ==================== COMUNICACIÓN HTTP REST ==================== -->
+  <line x1="700" y1="369" x2="700" y2="438" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)" marker-start="url(#arrow-blue)"/>
+  <rect x="520" y="394" width="360" height="24" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="700" y="410" fill="#1e3a8a" font-size="11.5" font-weight="800" text-anchor="middle">HTTP / JSON &amp; multipart/form-data (Contrato REST v1.0)</text>
+
+
+  <!-- ==================== CAPA 2: BACKEND ==================== -->
+  <rect x="44" y="440" width="1312" height="275" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="64" y="428" width="560" height="24" rx="5" fill="#047857"/>
+  <text x="344" y="444" fill="#ffffff" font-size="12" font-weight="800" text-anchor="middle">CAPA DE LÓGICA DE NEGOCIO — BACKEND (Spring Boot 3.3.5 · Java 21 · Puerto 8080)</text>
+
+  <!-- 5. Capa de Exposición REST (Controladores) -->
+  <g filter="url(#shadow)">
+    <rect x="85" y="466" width="380" height="68" rx="7" fill="#ffffff" stroke="#059669" stroke-width="1.8"/>
+    <text x="275" y="488" fill="#065f46" font-size="13" font-weight="800" text-anchor="middle">5.1 ProyectoController</text>
+    <text x="275" y="506" fill="#334155" font-size="11" font-family="monospace" text-anchor="middle">GET/POST /api/proyectos</text>
+    <text x="275" y="522" fill="#334155" font-size="11" font-family="monospace" text-anchor="middle">POST /api/proyectos/{id}/analisis</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="510" y="466" width="380" height="68" rx="7" fill="#ffffff" stroke="#059669" stroke-width="1.8"/>
+    <text x="700" y="488" fill="#065f46" font-size="13" font-weight="800" text-anchor="middle">5.2 AnalisisController</text>
+    <text x="700" y="506" fill="#334155" font-size="11" font-family="monospace" text-anchor="middle">GET /api/analisis/{id}/resumen | /hallazgos</text>
+    <text x="700" y="522" fill="#334155" font-size="11" font-family="monospace" text-anchor="middle">GET /api/analisis/{id}/grafo   | /reporte</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="935" y="466" width="380" height="68" rx="7" fill="#ffffff" stroke="#059669" stroke-width="1.8"/>
+    <text x="1125" y="488" fill="#065f46" font-size="13" font-weight="800" text-anchor="middle">5.3 HealthController &amp; WebCorsConfig</text>
+    <text x="1125" y="506" fill="#334155" font-size="11" font-family="monospace" text-anchor="middle">GET /api/health · Políticas CORS (:4200)</text>
+    <text x="1125" y="522" fill="#64748b" font-size="11" text-anchor="middle">DTOs Inmutables Java Record + Jakarta Validation</text>
+  </g>
+
+  <!-- 6. AnalisisService (Motor central) -->
+  <g filter="url(#shadow)">
+    <rect x="510" y="560" width="805" height="66" rx="7" fill="#ffffff" stroke="#047857" stroke-width="2.2"/>
+    <rect x="510" y="560" width="805" height="22" rx="7" fill="#047857"/>
+    <text x="912" y="575" fill="#ffffff" font-size="11.5" font-weight="800" text-anchor="middle">6. MOTOR DE ANÁLISIS, INTEGRACIÓN OSV Y PRIORIZACIÓN EXPLICABLE (RF-03 / RF-04 / RF-05)</text>
+    <text x="912" y="597" fill="#0f172a" font-size="13" font-weight="800" text-anchor="middle">AnalisisService (service/AnalisisService.java)</text>
+    <text x="912" y="615" fill="#475569" font-size="11" text-anchor="middle">Parser CycloneDX JSON · Cliente HTTP OSV · Algoritmo determinista SecureGraph Score (0-100) y generación de razones</text>
+  </g>
+
+  <!-- 7. Capa de Repositorios Spring Data JPA -->
+  <g filter="url(#shadow)">
+    <rect x="85" y="646" width="805" height="54" rx="7" fill="#064e3b" stroke="#022c22" stroke-width="2"/>
+    <text x="487" y="669" fill="#6ee7b7" font-size="13.5" font-weight="800" text-anchor="middle">7. Capa de Persistencia y Grafos — Spring Data JPA Repositories &amp; Entidades JPA</text>
+    <text x="487" y="688" fill="#d1fae5" font-size="10.2" text-anchor="middle">ProyectoRepository · AnalisisRepository · ComponenteRepository · RelacionDependenciaRepository (WITH RECURSIVE) · HallazgoVulnerabilidadRepository</text>
+  </g>
+
+  <!-- Flechas internas Backend -->
+  <line x1="275" y1="534" x2="275" y2="646" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <line x1="380" y1="534" x2="580" y2="560" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <line x1="700" y1="534" x2="700" y2="560" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <line x1="700" y1="626" x2="700" y2="646" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+
+  <!-- ==================== CAPA 3: INFRAESTRUCTURA Y SERVICIOS EXTERNOS ==================== -->
+  <rect x="44" y="758" width="1312" height="140" rx="10" fill="#faf5ff" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="64" y="746" width="530" height="24" rx="5" fill="#6d28d9"/>
+  <text x="329" y="762" fill="#ffffff" font-size="12" font-weight="800" text-anchor="middle">CAPA DE DATOS Y SERVICIOS EXTERNOS (Docker Compose &amp; Inteligencia OSV)</text>
+
+  <!-- PostgreSQL 16 + Flyway -->
+  <g filter="url(#shadow)">
+    <rect x="85" y="786" width="805" height="92" rx="8" fill="#ffffff" stroke="#6d28d9" stroke-width="2"/>
+    <rect x="85" y="786" width="805" height="26" rx="8" fill="#6d28d9"/>
+    <text x="487" y="803" fill="#ffffff" font-size="12.5" font-weight="800" text-anchor="middle">BASE DE DATOS RELACIONAL — PostgreSQL 16 (Contenedor Docker securegraph-postgres · Puerto 5432)</text>
+    <text x="487" y="829" fill="#0f172a" font-size="13" font-weight="700" text-anchor="middle">Esquema Versionado con Flyway (V1__init_schema.sql) — 5 Tablas Relacionales</text>
+    <text x="487" y="849" fill="#475569" font-size="11.5" text-anchor="middle">Tablas: proyecto · analisis · componente · relacion_dependencia · hallazgo_vulnerabilidad</text>
+    <text x="487" y="867" fill="#6d28d9" font-size="11" font-weight="700" text-anchor="middle">Recorrido de caminos y cálculo de profundidad topológica mediante consultas SQL recursivas (WITH RECURSIVE)</text>
+  </g>
+
+  <!-- API Pública OSV -->
+  <g filter="url(#shadow)">
+    <rect x="935" y="786" width="380" height="92" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+    <rect x="935" y="786" width="380" height="26" rx="8" fill="#7c3aed"/>
+    <text x="1125" y="803" fill="#ffffff" font-size="12.5" font-weight="800" text-anchor="middle">SERVICIO EXTERNO — API Pública OSV.dev</text>
+    <text x="1125" y="829" fill="#0f172a" font-size="13" font-weight="700" text-anchor="middle">Open Source Vulnerabilities (Google / OpenSSF)</text>
+    <text x="1125" y="849" fill="#334155" font-size="11.5" font-family="monospace" text-anchor="middle">POST https://api.osv.dev/v1/query</text>
+    <text x="1125" y="867" fill="#64748b" font-size="11" text-anchor="middle">Consulta por ecosistema Maven (groupId:artifactId + version)</text>
+  </g>
+
+  <!-- Flechas hacia Infraestructura -->
+  <line x1="487" y1="700" x2="487" y2="784" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)" marker-start="url(#arrow-purple)"/>
+  <rect x="342" y="716" width="290" height="22" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="487" y="731" fill="#5b21b6" font-size="11" font-weight="800" text-anchor="middle">JDBC / Hibernate + SQL CTE Recursivas</text>
+
+  <line x1="1125" y1="626" x2="1125" y2="784" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)" marker-start="url(#arrow-purple)"/>
+  <rect x="990" y="716" width="270" height="22" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="1125" y="731" fill="#5b21b6" font-size="11" font-weight="800" text-anchor="middle">HTTPS REST JSON (Consulta de CVEs)</text>
+</svg>
