@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SecureGraphDataService } from '../../services/securegraph-data.service';
 import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
 
@@ -226,14 +226,19 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
 })
 export class DashboardComponent implements OnInit {
   private readonly dataService = inject(SecureGraphDataService);
+  private readonly route = inject(ActivatedRoute);
 
-  readonly analysisId = 42;
+  analysisId = 42;
   readonly summary = signal<AnalysisSummary | null>(null);
   readonly findings = signal<FindingItem[]>([]);
   readonly ordenActual = signal<'score' | 'cvss'>('score');
   readonly filtroSeveridad = signal<string>('');
 
   ngOnInit(): void {
+    const queryAnalysisId = Number(this.route.snapshot.queryParamMap.get('analysisId'));
+    if (queryAnalysisId > 0) {
+      this.analysisId = queryAnalysisId;
+    }
     this.cargarDatos();
   }
 

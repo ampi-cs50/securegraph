@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SecureGraphDataService } from '../../services/securegraph-data.service';
 import { Proyecto } from '../../models/securegraph.models';
 
@@ -140,6 +140,7 @@ import { Proyecto } from '../../models/securegraph.models';
 export class UploadSbomComponent implements OnInit {
   private readonly dataService = inject(SecureGraphDataService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly proyectos = signal<Proyecto[]>([]);
   readonly selectedProjectId = signal<number>(1);
@@ -148,9 +149,12 @@ export class UploadSbomComponent implements OnInit {
   readonly errorMessage = signal<string>('');
 
   ngOnInit(): void {
+    const queryProyectoId = Number(this.route.snapshot.queryParamMap.get('proyectoId'));
     this.dataService.getProyectos().subscribe((lista) => {
       this.proyectos.set(lista);
-      if (lista.length > 0) {
+      if (queryProyectoId && lista.some((p) => p.id === queryProyectoId)) {
+        this.selectedProjectId.set(queryProyectoId);
+      } else if (lista.length > 0) {
         this.selectedProjectId.set(lista[0].id);
       }
     });
