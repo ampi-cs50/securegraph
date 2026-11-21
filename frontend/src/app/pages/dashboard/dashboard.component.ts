@@ -79,6 +79,23 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
       </div>
     </div>
 
+    @if (loading()) {
+      <div class="card state-box">Cargando hallazgos del análisis #{{ analysisId }}...</div>
+    } @else if (errorMessage()) {
+      <div class="card state-box state-error">
+        <p>{{ errorMessage() }}</p>
+        <button class="btn btn-outline" (click)="cargarDatos()">Reintentar</button>
+      </div>
+    } @else if (findings().length === 0) {
+      <div class="card state-box">
+        @if (filtroSeveridad()) {
+          <p>No hay hallazgos de severidad {{ filtroSeveridad() }} en este análisis.</p>
+          <button class="btn btn-outline" (click)="cambiarSeveridad('')">Mostrar todas las severidades</button>
+        } @else {
+          <p>Este análisis no detectó vulnerabilidades conocidas en las dependencias.</p>
+        }
+      </div>
+    } @else {
     <div class="card table-wrapper">
       <table>
         <thead>
@@ -127,6 +144,7 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
         </tbody>
       </table>
     </div>
+    }
   `,
   styles: [`
     .dashboard-header {
@@ -179,8 +197,8 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
     select {
       background: #0f172a;
       color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border: 0.0625rem solid var(--border-color);
+      border-radius: 0.375rem;
       padding: 0.45rem 0.75rem;
     }
     .table-wrapper {
@@ -194,7 +212,7 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
     th, td {
       text-align: left;
       padding: 0.85rem 0.75rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 0.0625rem solid var(--border-color);
       vertical-align: top;
     }
     th {
@@ -212,15 +230,48 @@ import { AnalysisSummary, FindingItem } from '../../models/securegraph.models';
       display: inline-block;
       background: rgba(56, 189, 248, 0.16);
       color: var(--accent);
-      border: 1px solid var(--accent);
+      border: 0.0625rem solid var(--accent);
       padding: 0.25rem 0.6rem;
-      border-radius: 6px;
+      border-radius: 0.375rem;
       font-weight: 700;
     }
     .reasons-list {
       padding-left: 1.1rem;
       color: #cbd5e1;
       font-size: 0.8rem;
+    }
+    .state-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .state-error {
+      border-color: var(--critical);
+      color: #fca5a5;
+    }
+    @media (max-width: 60rem) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .dashboard-header,
+      .controls-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+    }
+    @media (max-width: 40rem) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .control-group {
+        flex-wrap: wrap;
+      }
     }
   `]
 })
@@ -233,6 +284,8 @@ export class DashboardComponent implements OnInit {
   readonly findings = signal<FindingItem[]>([]);
   readonly ordenActual = signal<'score' | 'cvss'>('score');
   readonly filtroSeveridad = signal<string>('');
+  readonly loading = signal<boolean>(false);
+  readonly errorMessage = signal<string>('');
 
   ngOnInit(): void {
     const queryAnalysisId = Number(this.route.snapshot.queryParamMap.get('analysisId'));
@@ -243,11 +296,22 @@ export class DashboardComponent implements OnInit {
   }
 
   cargarDatos(): void {
+    this.loading.set(true);
+    this.errorMessage.set('');
     this.dataService
       .getHallazgos(this.analysisId, this.ordenActual(), this.filtroSeveridad())
-      .subscribe((resp) => {
-        this.summary.set(resp.summary);
-        this.findings.set(resp.findings);
+      .subscribe({
+        next: (resp) => {
+          this.summary.set(resp.summary);
+          this.findings.set(resp.findings);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+          this.errorMessage.set(
+            'No se pudieron obtener los hallazgos del análisis. Verifica que el backend esté activo o cambia a Modo Mock.'
+          );
+        }
       });
   }
 
