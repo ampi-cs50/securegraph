@@ -183,11 +183,13 @@ Para el próximo periodo (semanas 5 a 6, rumbo al Informe de Avance N° 2), la p
 
 | Diagrama | Estado | Versión / Fecha | Link / Ubicación |
 | :--- | :--- | :---: | :--- |
-| **Esquema de la base de datos (DER)** | `[ ]` Pendiente `[ ]` En progreso `[X]` Completo | v1.0 — 28/11/2026 | Sección 7.2.1 de este documento y `V1__init_schema.sql` |
-| **Diagrama de módulos del sistema** | `[ ]` Pendiente `[ ]` En progreso `[X]` Completo | v1.0 — 28/11/2026 | Sección 7.2.2 de este documento |
+| **Esquema de la base de datos (DER)** | `[ ]` Pendiente `[ ]` En progreso `[X]` Completo | v1.0 — 28/11/2026 | Sección 7.2.1 (`docs/entregables/diagramas/01-der-esquema-base-datos.png`) y `V1__init_schema.sql` |
+| **Diagrama de módulos del sistema** | `[ ]` Pendiente `[ ]` En progreso `[X]` Completo | v1.0 — 28/11/2026 | Sección 7.2.2 (`docs/entregables/diagramas/02-diagrama-modulos-sistema.png`) |
 | **Listado de módulos a desarrollar** | `[ ]` Pendiente `[ ]` En progreso `[X]` Completo | v1.0 — 28/11/2026 | Sección 7.2.3 de este documento |
 
 #### 7.2.1 Esquema Completo de la Base de Datos (Diagrama Entidad-Relación — DER)
+
+![Diagrama Entidad-Relación (DER) — SecureGraph](diagramas/01-der-esquema-base-datos.png)
 
 ```mermaid
 erDiagram
@@ -299,6 +301,8 @@ erDiagram
 
 #### 7.2.2 Diagrama de Módulos del Sistema
 
+![Diagrama de Módulos del Sistema — SecureGraph](diagramas/02-diagrama-modulos-sistema.png)
+
 ```mermaid
 flowchart TD
     subgraph Frontend ["FRONTEND — Angular 17+ SPA (Puerto 4200)"]
@@ -364,7 +368,7 @@ flowchart TD
 | :--- | :--- | :--- | :---: | :--- |
 | Endpoint de Salud (`GET /api/health`) | Unitaria (`@WebMvcTest` / JUnit 5) | Backend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | Verificado mediante `HealthControllerTest` con `MockMvc`. |
 | Endpoints de Resumen, Hallazgos, Grafo y Reporte (`/api/analisis/42/*`) | Unitaria (`@WebMvcTest` / JUnit 5) | Backend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | Verificado mediante `AnalisisControllerTest` comprobando estructura JSON y ordenamiento. |
-| Validación de carga de archivos SBOM (`.json` vs formatos inválidos) | Funcional / Usabilidad | Frontend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | El componente rechaza extensiones no válidas y muestra alerta descriptiva antes de enviar. |
+| Validación de carga de archivos SBOM (`.json` CycloneDX vs formatos inválidos) | Funcional / Usabilidad | Frontend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | El componente valida extensión `.json`, sintaxis y propiedad `"bomFormat": "CycloneDX"`, previsualizando metadatos o mostrando alerta descriptiva antes de enviar. |
 | Conmutación de ordenamiento (*SecureGraph Score* vs *CVSS Puro*) y filtro por severidad | Funcional / Integración | Frontend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | La tabla reordena los hallazgos y actualiza la vista respetando el criterio seleccionado. |
 | Renderizado dinámico e inspección de nodos en Grafo SVG | Usabilidad / E2E | Frontend | `[X]` OK `[ ]` Fallo `[ ]` Parcial | Probado en navegador verificando selección de nodos e inspección de aristas `DIRECT` y `TRANSITIVE`. |
 
