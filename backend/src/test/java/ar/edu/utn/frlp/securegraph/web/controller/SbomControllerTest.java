@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,12 @@ class SbomControllerTest {
             {
               "bomFormat": "CycloneDX",
               "specVersion": "1.5",
-              "metadata": {"component": {"type": "application", "name": "app", "bom-ref": "app"}},
+              "version": 1,
+              "metadata": {"component": {"type": "application", "name": "app", "version": "1.0", "bom-ref": "app"}},
               "components": [
                 {"type": "library", "name": "direct", "bom-ref": "direct", "group": "example",
                  "version": "1.0", "purl": "pkg:maven/example/direct@1.0", "scope": "optional"},
-                {"type": "library", "name": "transitive", "bom-ref": "transitive"}
+                {"type": "library", "name": "transitive", "version": "1.0", "bom-ref": "transitive"}
               ],
               "dependencies": [
                 {"ref": "app", "dependsOn": ["direct"]},
@@ -65,8 +67,9 @@ class SbomControllerTest {
     @Captor private ArgumentCaptor<Iterable<Componente>> savedComponents;
     @Captor private ArgumentCaptor<Iterable<RelacionDependencia>> savedEdges;
 
-    @Test
-    void importsComponentsAndEdgesWithThePersistedAnalysisId() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"1.2", "1.3", "1.4", "1.5", "1.6"})
+    void importsComponentsAndEdgesWithThePersistedAnalysisId(String specVersion) throws Exception {
         Proyecto project = new Proyecto();
         project.setId(7L);
         when(projects.findById(7L)).thenReturn(Optional.of(project));
@@ -76,7 +79,7 @@ class SbomControllerTest {
             return analysis;
         });
 
-        mockMvc.perform(multipart(URL).file(file("bom.json", SBOM)))
+        mockMvc.perform(multipart(URL).file(file("bom.json", withVersion(specVersion))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.projectId").value(7))
                 .andExpect(jsonPath("$.analysisId").value(108))
@@ -131,6 +134,15 @@ class SbomControllerTest {
                 Arguments.of("malformed JSON", "bom.json", "{"),
                 Arguments.of("unrelated JSON", "bom.json", "{}"),
                 Arguments.of("trailing JSON", "bom.json", SBOM + "{}"),
+                Arguments.of("wrong BOM format", "bom.json", SBOM.replace("CycloneDX", "SPDX")),
+                Arguments.of("XML-only version 1.1", "bom.json", withVersion("1.1")),
+                Arguments.of("unsupported version 1.7", "bom.json", withVersion("1.7")),
+                Arguments.of("unknown version 1.99", "bom.json", withVersion("1.99")),
+                Arguments.of("invalid component type", "bom.json", SBOM.replace("\"library\"", "\"invalid-type\"")),
+                Arguments.of("invalid component scope", "bom.json", SBOM.replace("\"optional\"", "\"invalid-scope\"")),
+                Arguments.of("invalid BOM revision", "bom.json", SBOM.replace("\"version\": 1", "\"version\": \"1\"")),
+                Arguments.of("missing required revision in 1.2", "bom.json",
+                        withVersion("1.2").replace("\"version\": 1,", "")),
                 Arguments.of("unknown target", "bom.json",
                         SBOM.replace("[\"transitive\"]", "[\"missing\"]")),
                 Arguments.of("dependency cycle", "bom.json",
@@ -156,6 +168,10 @@ class SbomControllerTest {
 
     private static MockMultipartFile file(String filename, String contents) {
         return new MockMultipartFile("file", filename, "application/json", contents.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static String withVersion(String version) {
+        return SBOM.replace("\"specVersion\": \"1.5\"", "\"specVersion\": \"" + version + "\"");
     }
 
     private static void assertEdge(RelacionDependencia edge, String parent, String child, boolean transitive) {
