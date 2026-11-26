@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.cyclonedx.Format;
 import org.cyclonedx.Version;
 import org.cyclonedx.parsers.JsonParser;
 import org.springframework.stereotype.Service;
@@ -104,10 +103,14 @@ public class SbomImportService {
     }
 
     private void validateSchema(JsonNode document) {
-        Version version = Version.fromVersionString(readText(document, "specVersion", 16));
-        if (version == null || !version.getFormats().contains(Format.JSON)) {
-            throw new InvalidSbomException();
-        }
+        Version version = switch (readText(document, "specVersion", 16)) {
+            case "1.2" -> Version.VERSION_12;
+            case "1.3" -> Version.VERSION_13;
+            case "1.4" -> Version.VERSION_14;
+            case "1.5" -> Version.VERSION_15;
+            case "1.6" -> Version.VERSION_16;
+            case null, default -> throw new InvalidSbomException();
+        };
         try {
             if (!schemaValidator.validate(document, version).isEmpty()) {
                 throw new InvalidSbomException();
