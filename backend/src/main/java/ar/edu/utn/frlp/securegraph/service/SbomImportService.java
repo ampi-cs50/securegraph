@@ -60,6 +60,7 @@ public class SbomImportService {
 
         Map<String, Componente> nodes = new LinkedHashMap<>();
         Componente root = addComponent(document.path("metadata").path("component"), nodes);
+        root.setRaiz(true);
         Deque<JsonNode> pending = new ArrayDeque<>();
         addChildren(document, pending);
         while (!pending.isEmpty()) {
