@@ -44,6 +44,8 @@
 
 ---
 
+La importación admite CycloneDX JSON 1.2 a 1.6. El servidor valida el archivo contra el esquema correspondiente a `specVersion` antes de guardar el análisis. Si la versión JSON no está admitida o el documento infringe el esquema, responde `400 Bad Request`.
+
 ## 3. Ejemplos de Payloads JSON
 
 ### 3.1 `GET /api/health`
