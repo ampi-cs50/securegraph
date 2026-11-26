@@ -1,6 +1,7 @@
 package ar.edu.utn.frlp.securegraph.web.controller;
 
-import ar.edu.utn.frlp.securegraph.service.SbomImportService;
+import ar.edu.utn.frlp.securegraph.service.OsvClient.OsvException;
+import ar.edu.utn.frlp.securegraph.service.SbomAnalysisService;
 import ar.edu.utn.frlp.securegraph.service.SbomImportService.ImportResult;
 import ar.edu.utn.frlp.securegraph.service.SbomImportService.InvalidSbomException;
 import ar.edu.utn.frlp.securegraph.service.SbomImportService.ProjectNotFoundException;
@@ -22,16 +23,16 @@ import java.time.Instant;
 @RequestMapping("/api/proyectos/{id}/analisis")
 public class SbomController {
 
-    private final SbomImportService importService;
+    private final SbomAnalysisService importService;
 
-    public SbomController(SbomImportService importService) {
+    public SbomController(SbomAnalysisService importService) {
         this.importService = importService;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImportResult> importSbom(
             @PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(importService.importSbom(id, file));
+        return ResponseEntity.status(HttpStatus.CREATED).body(importService.analyze(id, file));
     }
 
     @ExceptionHandler(InvalidSbomException.class)
@@ -44,6 +45,12 @@ public class SbomController {
     @ExceptionHandler(ProjectNotFoundException.class)
     public ResponseEntity<ErrorResponse> projectNotFound(HttpServletRequest request) {
         return error(HttpStatus.NOT_FOUND, "El proyecto no existe.", request);
+    }
+
+    @ExceptionHandler(OsvException.class)
+    public ResponseEntity<ErrorResponse> osvError(OsvException exception, HttpServletRequest request) {
+        HttpStatus status = exception.isUnavailable() ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.BAD_GATEWAY;
+        return error(status, "No se pudo completar la consulta de vulnerabilidades a OSV.", request);
     }
 
     private ResponseEntity<ErrorResponse> error(HttpStatus status, String message, HttpServletRequest request) {

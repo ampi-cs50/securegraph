@@ -34,14 +34,19 @@ public class HallazgoVulnerabilidad {
     @Column(name = "cve_id", length = 50)
     private String cveId;
 
-    @Column(name = "severidad_cvss", nullable = false, precision = 3, scale = 1)
-    private BigDecimal severidadCvss = BigDecimal.ZERO;
+    @Column(name = "ghsa_id", length = 50)
+    private String ghsaId;
+
+    @Column(name = "osv_identifiers", columnDefinition = "TEXT")
+    private String osvIdentifiers;
+
+    @Column(name = "severidad_cvss", precision = 3, scale = 1)
+    private BigDecimal severidadCvss;
 
     @Column(name = "nivel_severidad", nullable = false, length = 20)
     private String nivelSeveridad;
 
-    @Column(nullable = false)
-    private Integer profundidad = 1;
+    private Integer profundidad;
 
     @Column(name = "score_prioridad", nullable = false, precision = 4, scale = 1)
     private BigDecimal scorePrioridad = BigDecimal.ZERO;
@@ -87,6 +92,22 @@ public class HallazgoVulnerabilidad {
 
     public void setCveId(String cveId) {
         this.cveId = cveId;
+    }
+
+    public String getGhsaId() {
+        return ghsaId;
+    }
+
+    public void setGhsaId(String ghsaId) {
+        this.ghsaId = ghsaId;
+    }
+
+    public String getOsvIdentifiers() {
+        return osvIdentifiers;
+    }
+
+    public void setOsvIdentifiers(String osvIdentifiers) {
+        this.osvIdentifiers = osvIdentifiers;
     }
 
     public BigDecimal getSeveridadCvss() {
