@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.cyclonedx.Format;
+import org.cyclonedx.Version;
+import org.cyclonedx.parsers.JsonParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +32,7 @@ import java.util.Set;
 public class SbomImportService {
 
     private final ObjectReader reader;
+    private final JsonParser schemaValidator = new JsonParser();
     private final ProyectoRepository projects;
     private final AnalisisRepository analyses;
     private final ComponenteRepository components;
@@ -53,11 +57,7 @@ public class SbomImportService {
         }
 
         JsonNode document = readDocument(file);
-        String specVersion = readText(document, "specVersion", 16);
-        if (!"CycloneDX".equals(readText(document, "bomFormat", 16))
-                || specVersion == null || !specVersion.matches("1\\.[0-9]+")) {
-            throw new InvalidSbomException();
-        }
+        validateSchema(document);
 
         Map<String, Componente> nodes = new LinkedHashMap<>();
         Componente root = addComponent(document.path("metadata").path("component"), nodes);
@@ -100,6 +100,20 @@ public class SbomImportService {
             return document;
         } catch (IOException ex) {
             throw new InvalidSbomException(ex);
+        }
+    }
+
+    private void validateSchema(JsonNode document) {
+        Version version = Version.fromVersionString(readText(document, "specVersion", 16));
+        if (version == null || !version.getFormats().contains(Format.JSON)) {
+            throw new InvalidSbomException();
+        }
+        try {
+            if (!schemaValidator.validate(document, version).isEmpty()) {
+                throw new InvalidSbomException();
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException("Could not load the CycloneDX JSON schema", ex);
         }
     }
 
