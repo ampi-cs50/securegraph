@@ -43,6 +43,9 @@ public class Componente {
     @Column(name = "es_directa", nullable = false)
     private Boolean esDirecta = false;
 
+    @Column(name = "es_raiz", nullable = false)
+    private boolean raiz;
+
     @Column(name = "modulo_contexto", length = 100)
     private String moduloContexto;
 
@@ -116,6 +119,10 @@ public class Componente {
 
     public void setEsDirecta(Boolean esDirecta) {
         this.esDirecta = esDirecta;
+    }
+
+    public void setRaiz(boolean raiz) {
+        this.raiz = raiz;
     }
 
     public String getModuloContexto() {
