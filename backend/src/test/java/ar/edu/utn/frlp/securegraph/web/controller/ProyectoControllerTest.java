@@ -4,6 +4,7 @@ import ar.edu.utn.frlp.securegraph.domain.entity.Analisis;
 import ar.edu.utn.frlp.securegraph.domain.entity.Proyecto;
 import ar.edu.utn.frlp.securegraph.repository.AnalisisRepository;
 import ar.edu.utn.frlp.securegraph.repository.ProyectoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,7 +16,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -32,6 +32,9 @@ class ProyectoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private ProyectoRepository proyectoRepository;
@@ -109,13 +112,12 @@ class ProyectoControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(5))
                 .andExpect(jsonPath("$.timestamp").isString())
-                .andExpect(jsonPath("$.timestamp").value(timestamp -> {
-                    assertThat(Instant.parse(timestamp)).isNotNull();
-                }, String.class))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.message").value(message))
-                .andExpect(jsonPath("$.path").value(PATH));
+                .andExpect(jsonPath("$.path").value(PATH))
+                .andExpect(result -> Instant.parse(objectMapper.readTree(
+                        result.getResponse().getContentAsByteArray()).get("timestamp").asText()));
 
         verifyNoInteractions(proyectoRepository, analisisRepository);
     }
