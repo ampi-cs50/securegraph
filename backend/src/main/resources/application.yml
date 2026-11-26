@@ -30,5 +30,6 @@ securegraph:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
   osv:
     base-url: ${OSV_API_BASE_URL:https://api.osv.dev/v1}
-    timeout-seconds: 10
+    connect-timeout-seconds: ${OSV_CONNECT_TIMEOUT_SECONDS:3}
+    timeout-seconds: ${OSV_READ_TIMEOUT_SECONDS:10}
 
