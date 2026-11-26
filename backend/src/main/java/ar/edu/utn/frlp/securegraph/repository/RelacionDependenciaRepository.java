@@ -13,32 +13,47 @@ public interface RelacionDependenciaRepository extends JpaRepository<RelacionDep
 
     List<RelacionDependencia> findByAnalisisId(Long analisisId);
 
-    /**
-     * Consulta recursiva (WITH RECURSIVE) sobre PostgreSQL para explorar el DAG de dependencias
-     * y calcular las profundidades desde los componentes directos de un análisis.
-     */
     @Query(value = """
-            WITH RECURSIVE grafo_dependencias AS (
-                SELECT
-                    r.padre_componente_id,
-                    r.hijo_componente_id,
-                    1 AS profundidad
-                FROM relacion_dependencia r
-                JOIN componente c_padre ON c_padre.id = r.padre_componente_id
-                WHERE r.analisis_id = :analisisId AND c_padre.es_directa = TRUE
+            WITH RECURSIVE niveles(profundidad, frontera, visitados) AS (
+                SELECT 0, ARRAY[c.id], ARRAY[c.id]
+                FROM componente c
+                WHERE c.analisis_id = :analisisId AND c.es_raiz
+
                 UNION ALL
+
                 SELECT
-                    r.padre_componente_id,
-                    r.hijo_componente_id,
-                    g.profundidad + 1
-                FROM relacion_dependencia r
-                INNER JOIN grafo_dependencias g ON r.padre_componente_id = g.hijo_componente_id
-                WHERE r.analisis_id = :analisisId AND g.profundidad < 15
+                    n.profundidad + 1,
+                    siguiente.ids,
+                    n.visitados || siguiente.ids
+                FROM niveles n
+                CROSS JOIN LATERAL (
+                    SELECT array_agg(DISTINCT r.hijo_componente_id) AS ids
+                    FROM relacion_dependencia r
+                    JOIN componente hijo ON hijo.id = r.hijo_componente_id
+                        AND hijo.analisis_id = :analisisId
+                    WHERE r.analisis_id = :analisisId
+                        AND r.padre_componente_id = ANY(n.frontera)
+                        AND NOT (r.hijo_componente_id = ANY(n.visitados))
+                ) siguiente
+                WHERE cardinality(siguiente.ids) > 0
+            ), alcanzados AS (
+                SELECT unnest(frontera) AS id, profundidad
+                FROM niveles
             )
-            SELECT DISTINCT padre_componente_id, hijo_componente_id, MIN(profundidad) AS profundidad
-            FROM grafo_dependencias
-            GROUP BY padre_componente_id, hijo_componente_id
+            SELECT c.id AS "componentId", c.bom_ref AS "bomRef", a.profundidad AS "depth"
+            FROM componente c
+            LEFT JOIN alcanzados a ON a.id = c.id
+            WHERE c.analisis_id = :analisisId
+            ORDER BY a.profundidad NULLS LAST, c.id
             """, nativeQuery = true)
-    List<Object[]> calcularGrafoRecursivoPorAnalisis(@Param("analisisId") Long analisisId);
+    List<ProfundidadComponente> buscarProfundidadesMinimas(@Param("analisisId") Long analisisId);
+
+    interface ProfundidadComponente {
+        Long getComponentId();
+
+        String getBomRef();
+
+        Integer getDepth();
+    }
 }
 
