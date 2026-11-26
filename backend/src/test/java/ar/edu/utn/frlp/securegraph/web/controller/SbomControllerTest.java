@@ -9,6 +9,8 @@ import ar.edu.utn.frlp.securegraph.repository.ComponenteRepository;
 import ar.edu.utn.frlp.securegraph.repository.ProyectoRepository;
 import ar.edu.utn.frlp.securegraph.repository.RelacionDependenciaRepository;
 import ar.edu.utn.frlp.securegraph.service.SbomImportService;
+import ar.edu.utn.frlp.securegraph.service.SbomAnalysisService;
+import ar.edu.utn.frlp.securegraph.service.VulnerabilityScanService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SbomController.class)
-@Import(SbomImportService.class)
+@Import({SbomImportService.class, SbomAnalysisService.class})
 class SbomControllerTest {
 
     private static final String URL = "/api/proyectos/7/analisis";
@@ -64,6 +66,7 @@ class SbomControllerTest {
     @MockBean private AnalisisRepository analyses;
     @MockBean private ComponenteRepository components;
     @MockBean private RelacionDependenciaRepository dependencies;
+    @MockBean private VulnerabilityScanService scanner;
     @Captor private ArgumentCaptor<Iterable<Componente>> savedComponents;
     @Captor private ArgumentCaptor<Iterable<RelacionDependencia>> savedEdges;
 
@@ -79,6 +82,7 @@ class SbomControllerTest {
             return analysis;
         });
 
+        when(analyses.getReferenceById(108L)).thenReturn(new Analisis());
         mockMvc.perform(multipart(URL).file(file("bom.json", withVersion(specVersion))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.projectId").value(7))
