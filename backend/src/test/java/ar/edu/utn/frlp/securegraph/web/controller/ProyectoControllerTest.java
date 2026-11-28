@@ -6,10 +6,13 @@ import ar.edu.utn.frlp.securegraph.repository.AnalisisRepository;
 import ar.edu.utn.frlp.securegraph.repository.ProyectoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -115,6 +118,36 @@ class ProyectoControllerTest {
     @Test
     void shouldRejectProjectNameLongerThan100Characters() throws Exception {
         assertValidationError("a".repeat(101), "El nombre no puede superar los 100 caracteres");
+    }
+
+    @Test
+    void serializesTheCreationInstantOfNewProjectsInUtc() throws Exception {
+        when(proyectoRepository.save(any(Proyecto.class))).thenAnswer(invocation -> {
+            Proyecto project = invocation.getArgument(0);
+            project.setId(5L);
+            ReflectionTestUtils.invokeMethod(project, "onCreate");
+            return project;
+        });
+
+        mockMvc.perform(post(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Proyecto nuevo\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(result -> Instant.parse(objectMapper.readTree(
+                        result.getResponse().getContentAsByteArray()).get("createdAt").asText()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"{\"nombre\":", "{\"nombre\":{\"dato\":\"internal sentinel\"}}"})
+    void sanitizesJsonDeserializationFailures(String body) throws Exception {
+        mockMvc.perform(post(PATH).contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$.timestamp").isString())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("El cuerpo de la solicitud no contiene un JSON válido."))
+                .andExpect(jsonPath("$.path").value(PATH));
+        verifyNoInteractions(proyectoRepository, analisisRepository);
     }
 
     private void assertValidationError(String nombre, String message) throws Exception {

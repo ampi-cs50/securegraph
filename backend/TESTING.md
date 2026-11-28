@@ -129,3 +129,66 @@ indican que el paquete no contiene elementos de ese tipo.
 | backend.repository | — | — | — |
 | db.migration | 0.00% (0/86) | 0.00% (0/23) | 0.00% (0/6) |
 | backend.web.exception | 97.10% (67/69) | 92.86% (13/14) | 50.00% (1/2) |
+
+## Correcciones de cumplimiento sobre `12a6104`
+
+La auditoría anterior queda como referencia histórica. Las correcciones de
+esta revisión se limitan a los tres hallazgos funcionales documentados.
+
+| Hallazgo | Corrección y verificación |
+| --- | --- |
+| Salud reportaba `UP` sin consultar PostgreSQL | Toma una conexión del `DataSource`, ejecuta la validación JDBC con un límite de dos segundos y libera la conexión. Responde HTTP 200 / `UP` con una conexión válida y HTTP 503 / `DOWN` si falla la adquisición o validación. Mantiene los cuatro campos específicos de salud y no devuelve mensajes JDBC. MockMvc verifica ambos estados. |
+| Errores MVC podían omitir `message` | El advice traduce errores de deserialización, tipos, parámetros, validación y los errores existentes de SBOM y OSV al cuerpo de cinco campos. Se mantienen los códigos del contrato y los encabezados MVC. Los mensajes de infraestructura y el stack trace quedan fuera de la respuesta. |
+| `createdAt` carecía del offset del ejemplo del contrato | V5 añade `proyecto.created_at_utc` con tipo `timestamp with time zone` y deja las filas existentes con la columna nueva nula. Para cada alta de la API se captura el instante real y se serializa con `Z`. El valor histórico se devuelve como fecha local ISO 8601, sin asignarle una zona. |
+
+### Procedencia de las fechas
+
+V1 definió `proyecto.created_at` y `analisis.fecha_analisis` como
+`timestamp without time zone`. Las entidades originales usaban
+`LocalDateTime.now()` y los valores por defecto de SQL dependían de la
+sesión que ejecutaba la inserción. El valor actual de `SHOW TimeZone` no
+identifica la zona histórica de cada fila ni la de las JVM que la escribieron.
+La revisión de esquema y código confirmó que esa información no se guardó.
+La sesión real no pudo consultarse desde este entorno. V5 no ejecuta
+backfill ni convierte campos existentes. `fecha_analisis` es interna.
+`generatedAt` del reporte y el `timestamp` de salud y errores representan
+instantes UTC.
+
+### Conteo de clases de JaCoCo
+
+En la base, el analizador preliminar procesó 56 archivos `.class`. El XML
+contiene los mismos 56 elementos `class`, de los cuales nueve son
+interfaces de repositorios y proyecciones sin contador de instrucciones.
+El plugin Maven 0.8.11 informa el contador `CLASS` del informe y contabilizó
+47 clases con código. La diferencia de nueve se comprobó en el XML, sin
+exclusiones ni cambios al POM de cobertura. La unificación del DTO de error
+elimina una clase con código en esta revisión.
+
+### Resultados de esta revisión
+
+Se conservaron los 94 casos base y se agregaron ocho regresiones. La
+ejecución de esta revisión registró **102 casos, 88 aprobados, 0 fallos,
+0 errores y 14 omitidos**. Los 14 requieren PostgreSQL. Son 12 de la base
+y dos nuevos para salud con una conexión real y persistencia temporal V5.
+Pasaron las seis pruebas nuevas que no requieren PostgreSQL.
+
+| Métrica | Cobertura parcial | Cubiertos / total |
+| --- | ---: | ---: |
+| Instrucciones | 90,48 % | 3328 / 3678 |
+| Líneas | 87,81 % | 677 / 771 |
+| Ramas | 72,97 % | 243 / 333 |
+
+Se analizaron 55 archivos `.class`, 46 con código y nueve sin instrucciones.
+
+El `pom.xml` conserva JaCoCo 0.8.11. El intento de
+`mvn clean verify` con ese POM no pudo resolver el plugin desde Maven
+Central. El resultado anterior se obtuvo con `clean test`, un POM temporal
+sin el binding del plugin y el agente y formateadores JaCoCo 0.8.11. Se
+analizó todo `target/classes`. Los informes HTML/XML quedaron en
+`backend/target/site/jacoco`. Esta medición parcial no se compara
+directamente con la referencia completa en PostgreSQL de la PR #12
+(95,40 % de instrucciones, 92,37 % de líneas y 76,90 % de ramas).
+
+Queda pendiente ejecutar `mvn clean verify` con la base de pruebas definida
+arriba y confirmar Flyway V5, la lectura y escritura de instantes UTC y el
+sondeo HTTP con PostgreSQL 16.16 real.

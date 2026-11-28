@@ -8,7 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "proyecto")
@@ -27,10 +30,14 @@ public class Proyecto {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "created_at_utc", updatable = false)
+    private Instant createdAtInstant;
+
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
+            this.createdAtInstant = Instant.now().truncatedTo(ChronoUnit.MICROS);
+            this.createdAt = LocalDateTime.ofInstant(createdAtInstant, ZoneId.systemDefault());
         }
     }
 
@@ -60,6 +67,10 @@ public class Proyecto {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getCreatedAtInstant() {
+        return createdAtInstant;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

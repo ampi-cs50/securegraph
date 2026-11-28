@@ -39,7 +39,7 @@ class SecureGraphScoreMigrationPostgresTest {
                     VALUES (1, 1, 'OSV-RF05', 'HIGH', 2)
                     """);
 
-            var migration = Flyway.configure().dataSource(source).schemas(schema).load().migrate();
+            var migration = Flyway.configure().dataSource(source).schemas(schema).target("4").load().migrate();
 
             assertThat(migration.migrationsExecuted).isEqualTo(1);
             assertThat(fixture.queryForMap("""

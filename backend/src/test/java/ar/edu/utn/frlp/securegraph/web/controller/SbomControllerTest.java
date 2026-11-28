@@ -176,6 +176,20 @@ class SbomControllerTest {
         verifyNoInteractions(analyses, components, dependencies);
     }
 
+    @Test
+    void rejectsANonNumericProjectIdUsingTheStandardError() throws Exception {
+        String path = "/api/proyectos/invalid/analisis";
+        mockMvc.perform(multipart(path).file(file("bom.json", SBOM)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$.timestamp").isString())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("La solicitud contiene un parámetro con un tipo inválido."))
+                .andExpect(jsonPath("$.path").value(path));
+        verifyNoInteractions(projects, analyses, components, dependencies);
+    }
+
     private static MockMultipartFile file(String filename, String contents) {
         return new MockMultipartFile("file", filename, "application/json", contents.getBytes(StandardCharsets.UTF_8));
     }
