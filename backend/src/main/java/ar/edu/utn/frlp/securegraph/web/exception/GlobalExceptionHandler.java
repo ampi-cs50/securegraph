@@ -1,5 +1,7 @@
 package ar.edu.utn.frlp.securegraph.web.exception;
 
+import ar.edu.utn.frlp.securegraph.service.AnalisisService.AnalysisNotFoundException;
+import ar.edu.utn.frlp.securegraph.service.AnalisisService.InvalidAnalysisQueryException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -27,13 +29,25 @@ public class GlobalExceptionHandler {
             message = "La solicitud contiene datos inválidos";
         }
 
-        return new ValidationError(
-                Instant.now().toString(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                message,
-                request.getRequestURI()
-        );
+        return error(HttpStatus.BAD_REQUEST, message, request);
+    }
+
+    @ExceptionHandler(InvalidAnalysisQueryException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationError handleInvalidAnalysisQuery(InvalidAnalysisQueryException exception,
+                                                       HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(AnalysisNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ValidationError handleAnalysisNotFound(HttpServletRequest request) {
+        return error(HttpStatus.NOT_FOUND, "El análisis no existe.", request);
+    }
+
+    private static ValidationError error(HttpStatus status, String message, HttpServletRequest request) {
+        return new ValidationError(Instant.now().toString(), status.value(), status.getReasonPhrase(),
+                message, request.getRequestURI());
     }
 
     public record ValidationError(String timestamp, int status, String error, String message, String path) {

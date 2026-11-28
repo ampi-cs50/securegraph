@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ComponenteRepository extends JpaRepository<Componente, Long> {
     List<Componente> findByAnalisisId(Long analisisId);
+    List<Componente> findByAnalisisIdOrderByIdAsc(Long analisisId);
 }
 
