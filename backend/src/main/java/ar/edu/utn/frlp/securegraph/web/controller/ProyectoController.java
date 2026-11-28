@@ -34,14 +34,7 @@ public class ProyectoController {
                 .map(proyecto -> {
                     List<Analisis> historial = analisisRepository.findByProyectoIdOrderByFechaAnalisisDesc(proyecto.getId());
                     Long ultimoAnalisisId = historial.isEmpty() ? null : historial.getFirst().getId();
-                    return new ProyectoDto(
-                            proyecto.getId(),
-                            proyecto.getNombre(),
-                            proyecto.getDescripcion(),
-                            proyecto.getCreatedAt(),
-                            ultimoAnalisisId,
-                            historial.size()
-                    );
+                    return ProyectoDto.from(proyecto, ultimoAnalisisId, historial.size());
                 })
                 .toList();
         return ResponseEntity.ok(proyectos);
@@ -54,14 +47,7 @@ public class ProyectoController {
         proyecto.setDescripcion(request.descripcion());
         Proyecto guardado = proyectoRepository.save(proyecto);
 
-        ProyectoDto dto = new ProyectoDto(
-                guardado.getId(),
-                guardado.getNombre(),
-                guardado.getDescripcion(),
-                guardado.getCreatedAt(),
-                null,
-                0
-        );
+        ProyectoDto dto = ProyectoDto.from(guardado, null, 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 

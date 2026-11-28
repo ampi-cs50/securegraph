@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -94,6 +95,7 @@ class AnalisisControllerTest {
                 .andExpect(jsonPath("$.projectName").value("Inventory API"))
                 .andExpect(jsonPath("$.sbomFormat").value("CycloneDX-JSON"))
                 .andExpect(jsonPath("$.orderingCriterion").value("cvss"))
+                .andExpect(jsonPath("$.generatedAt").value(endsWith("Z")))
                 .andExpect(jsonPath("$.findings").isArray());
     }
 
@@ -133,6 +135,7 @@ class AnalisisControllerTest {
     void rejectsInvalidIdsAndParameters(String url) throws Exception {
         mockMvc.perform(get(url))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(5))
                 .andExpect(jsonPath("$.timestamp").isString())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.error").value("Bad Request"))
