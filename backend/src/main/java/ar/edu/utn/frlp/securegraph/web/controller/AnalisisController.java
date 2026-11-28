@@ -1,6 +1,7 @@
 package ar.edu.utn.frlp.securegraph.web.controller;
 
 import ar.edu.utn.frlp.securegraph.service.AnalisisService;
+import ar.edu.utn.frlp.securegraph.service.AnalisisService.InvalidAnalysisQueryException;
 import ar.edu.utn.frlp.securegraph.web.dto.FindingsResponseDto;
 import ar.edu.utn.frlp.securegraph.web.dto.FindingsResponseDto.SummaryDto;
 import ar.edu.utn.frlp.securegraph.web.dto.GraphResponseDto;
@@ -23,27 +24,35 @@ public class AnalisisController {
     }
 
     @GetMapping("/{id}/resumen")
-    public ResponseEntity<SummaryDto> obtenerResumen(@PathVariable Long id) {
-        return ResponseEntity.ok(analisisService.obtenerResumen(id));
+    public ResponseEntity<SummaryDto> obtenerResumen(@PathVariable String id) {
+        return ResponseEntity.ok(analisisService.obtenerResumen(parseId(id)));
     }
 
     @GetMapping("/{id}/hallazgos")
     public ResponseEntity<FindingsResponseDto> obtenerHallazgos(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam(defaultValue = "score") String orden,
             @RequestParam(required = false) String severidad) {
-        return ResponseEntity.ok(analisisService.obtenerHallazgos(id, orden, severidad));
+        return ResponseEntity.ok(analisisService.obtenerHallazgos(parseId(id), orden, severidad));
     }
 
     @GetMapping("/{id}/grafo")
-    public ResponseEntity<GraphResponseDto> obtenerGrafo(@PathVariable Long id) {
-        return ResponseEntity.ok(analisisService.obtenerGrafo(id));
+    public ResponseEntity<GraphResponseDto> obtenerGrafo(@PathVariable String id) {
+        return ResponseEntity.ok(analisisService.obtenerGrafo(parseId(id)));
     }
 
     @GetMapping("/{id}/reporte")
     public ResponseEntity<ReportResponseDto> obtenerReporte(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam(defaultValue = "score") String orden) {
-        return ResponseEntity.ok(analisisService.obtenerReporte(id, orden));
+        return ResponseEntity.ok(analisisService.obtenerReporte(parseId(id), orden));
+    }
+
+    private static Long parseId(String id) {
+        try {
+            return Long.valueOf(id);
+        } catch (NumberFormatException exception) {
+            throw new InvalidAnalysisQueryException("El identificador del análisis debe ser un entero positivo.");
+        }
     }
 }

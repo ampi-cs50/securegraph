@@ -48,6 +48,20 @@ public interface RelacionDependenciaRepository extends JpaRepository<RelacionDep
             """, nativeQuery = true)
     List<ProfundidadComponente> buscarProfundidadesMinimas(@Param("analisisId") Long analisisId);
 
+    @Query("""
+            select p.bomRef as source, c.bomRef as target, r.tipoTransitiva as transitive
+            from RelacionDependencia r join r.padreComponente p join r.hijoComponente c
+            where r.analisis.id = :id and p.analisis.id = :id and c.analisis.id = :id
+            order by r.id
+            """)
+    List<AristaAnalisis> buscarAristas(@Param("id") Long id);
+
+    interface AristaAnalisis {
+        String getSource();
+        String getTarget();
+        boolean getTransitive();
+    }
+
     interface ProfundidadComponente {
         Long getComponentId();
 

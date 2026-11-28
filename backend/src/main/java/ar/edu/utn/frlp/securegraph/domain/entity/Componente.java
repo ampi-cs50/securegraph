@@ -121,6 +121,10 @@ public class Componente {
         this.esDirecta = esDirecta;
     }
 
+    public boolean isRaiz() {
+        return raiz;
+    }
+
     public void setRaiz(boolean raiz) {
         this.raiz = raiz;
     }

@@ -23,10 +23,10 @@ public record FindingsResponseDto(
             String cveId,
             String component,
             String version,
-            double cvss,
+            Double cvss,
             String severity,
             boolean direct,
-            int depth,
+            Integer depth,
             double secureGraphScore,
             List<String> reasons
     ) {
