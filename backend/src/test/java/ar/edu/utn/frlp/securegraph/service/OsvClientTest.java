@@ -3,6 +3,8 @@ package ar.edu.utn.frlp.securegraph.service;
 import ar.edu.utn.frlp.securegraph.service.OsvClient.MavenPackage;
 import ar.edu.utn.frlp.securegraph.service.OsvClient.OsvException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -79,6 +81,36 @@ class OsvClientTest {
             assertThat(failure).isNotNull();
             assertThat(failure.isUnavailable()).isTrue();
         }
+        server.verify();
+    }
+
+    @Test
+    void rejectsRepeatedPageTokenInsteadOfLoopingOrReturningPartialResults() {
+        server.expect(requestTo(ENDPOINT)).andRespond(withSuccess("""
+                {"vulns":[{"id":"OSV-FIRST"}],"next_page_token":"repeat"}
+                """, MediaType.APPLICATION_JSON));
+        server.expect(requestTo(ENDPOINT)).andRespond(withSuccess("""
+                {"next_page_token":"repeat"}
+                """, MediaType.APPLICATION_JSON));
+
+        var failure = catchThrowableOfType(() -> client.query(MAVEN), OsvException.class);
+        assertThat(failure).isNotNull();
+        assertThat(failure.isUnavailable()).isFalse();
+        server.verify();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0.0,NONE", "0.1,LOW", "3.9,LOW", "4.0,MEDIUM",
+            "6.9,MEDIUM", "7.0,HIGH", "8.9,HIGH", "9.0,CRITICAL"})
+    void classifiesCvssAtSeverityBoundaries(String cvss, String expectedSeverity) {
+        server.expect(requestTo(ENDPOINT)).andRespond(withSuccess("""
+                {"vulns":[{"id":"OSV-RATED","severity":[{"type":"CVSS_V3","score":"%s"}]}]}
+                """.formatted(cvss), MediaType.APPLICATION_JSON));
+
+        assertThat(client.query(MAVEN)).singleElement().satisfies(advisory -> {
+            assertThat(advisory.cvss()).isEqualByComparingTo(cvss);
+            assertThat(advisory.severity()).isEqualTo(expectedSeverity);
+        });
         server.verify();
     }
 
