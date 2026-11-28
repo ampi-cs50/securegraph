@@ -68,6 +68,21 @@ class ProyectoControllerTest {
     }
 
     @Test
+    void shouldListProjectsWithoutAnAnalysis() throws Exception {
+        Proyecto project = new Proyecto();
+        project.setId(2L);
+        project.setNombre("Sin análisis");
+        when(proyectoRepository.findAll()).thenReturn(List.of(project));
+
+        mockMvc.perform(get(PATH))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[0].ultimoAnalisisId").hasJsonPath())
+                .andExpect(jsonPath("$[0].ultimoAnalisisId").isEmpty())
+                .andExpect(jsonPath("$[0].totalAnalisis").value(0));
+    }
+
+    @Test
     void shouldCreateProject() throws Exception {
         when(proyectoRepository.save(any(Proyecto.class))).thenAnswer(invocation -> {
             Proyecto proyecto = invocation.getArgument(0);
